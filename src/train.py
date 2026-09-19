@@ -1,4 +1,4 @@
-﻿# src/train.py — Phase 4: Training
+# src/train.py — Phase 4: Training
 import sys, os
 from pathlib import Path
 
@@ -39,17 +39,17 @@ print(f"Classes: {num_classes}  |  Train: {len(X_train)}  |  Val: {len(X_val)}")
 
 # ── Image loader ─────────────────────────────────────────────
 def load_image(path, label):
-    img = tf.io.read_file(path)
-    img = tf.image.decode_jpeg(img, channels=3)
+    img_bytes = tf.io.read_file(path)
+    img = tf.image.decode_image(img_bytes, channels=3, expand_animations=False)
     img = tf.image.resize(img, [IMG_SIZE, IMG_SIZE])
+    img.set_shape([IMG_SIZE, IMG_SIZE, 3])
     img = tf.cast(img, tf.float32) / 255.0
     return img, tf.one_hot(label, num_classes)
 
 
 def augment(img, label):
     img = tf.image.random_flip_left_right(img)
-    img = tf.image.random_brightness(img, 0.15)
-    img = tf.image.random_contrast(img, 0.85, 1.15)
+    img = tf.image.random_brightness(img, 0.1)
     img = tf.clip_by_value(img, 0.0, 1.0)
     return img, label
 
@@ -57,7 +57,7 @@ def augment(img, label):
 def make_dataset(paths, labels, augment_flag=False, shuffle=False):
     ds = tf.data.Dataset.from_tensor_slices((paths, labels))
     if shuffle:
-        ds = ds.shuffle(len(paths), seed=SEED)
+        ds = ds.shuffle(min(len(paths), 10000), seed=SEED)
     ds = ds.map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
     if augment_flag:
         ds = ds.map(augment, num_parallel_calls=tf.data.AUTOTUNE)
@@ -65,8 +65,12 @@ def make_dataset(paths, labels, augment_flag=False, shuffle=False):
     return ds
 
 
-train_ds = make_dataset(X_train, y_train, augment_flag=True, shuffle=True)
-val_ds   = make_dataset(X_val,   y_val,   augment_flag=False, shuffle=False)
+# For an agile, working Review 1 training run, use a representative slice for fast CPU iteration
+max_train = min(len(X_train), 15000)
+max_val   = min(len(X_val), 3000)
+
+train_ds = make_dataset(X_train[:max_train], y_train[:max_train], augment_flag=True, shuffle=True)
+val_ds   = make_dataset(X_val[:max_val],     y_val[:max_val],     augment_flag=False, shuffle=False)
 
 # ── Build & compile ───────────────────────────────────────────
 model = build_model(num_classes)
@@ -77,7 +81,7 @@ model.compile(
 )
 
 # ── Train ─────────────────────────────────────────────────────
-print(f"\nTraining for {EPOCHS} epochs ...")
+print(f"\nTraining for {EPOCHS} epochs ({max_train} train samples, {max_val} val samples) ...")
 history = model.fit(
     train_ds,
     validation_data=val_ds,
