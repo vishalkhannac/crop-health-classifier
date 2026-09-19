@@ -1,0 +1,23 @@
+﻿# Datasets and model artifacts (too large for git)
+hf_cache/
+data/
+model/splits/
+model/*.keras
+model/*.npy
+model/*.h5
+model/confusion_matrix.png
+model/training_curves.png
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Temp
+D:\tmp\
+get-pip*.py
+
+# OS
+.DS_Store
+Thumbs.db

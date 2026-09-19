@@ -1,0 +1,11 @@
+﻿tensorflow==2.13.0
+opencv-python-headless
+matplotlib
+numpy
+scikit-learn
+pillow
+streamlit
+datasets
+huggingface_hub
+tqdm
+altair
