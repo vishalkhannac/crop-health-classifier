@@ -1,5 +1,6 @@
-﻿# Datasets and model artifacts (too large for git)
+# Datasets and model artifacts (too large for git)
 hf_cache/
+hf_home/
 data/
 model/splits/
 model/*.keras
