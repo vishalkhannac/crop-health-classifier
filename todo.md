@@ -33,7 +33,7 @@ Then work through the phases below in order, stopping where the scope file says 
 - [x] **Phase 3 — Model (softmax, multi-class)** → `docs/phase-3-model.md` — Complete: MobileNetV2 base (frozen) + GAP + Dense(128) + Dropout(0.3) + Dense(54, softmax). 170,934 trainable params, 2,257,984 frozen params.
 - [x] **Phase 4 — Training (one working run — not tuned yet)** → `docs/phase-4-training.md` — Complete: 10 epochs trained with MobileNetV2, final val accuracy 95.03%, saved `model/model.keras` & `model/training_curves.png`.
 - [x] **Phase 5 — Evaluation (accuracy recorded, even if modest)** → `docs/phase-5-evaluation.md` — Complete: Test accuracy 94.10%, per-class F1 report and confusion matrix saved to `model/confusion_matrix.png`.
-- [ ] **Phase 6 — Verdict rules (disease + safe-to-consume)** → `docs/phase-6-verdicts.md`
+- [x] **Phase 6 — Verdict rules (disease + safe-to-consume)** → `docs/phase-6-verdicts.md` — Complete: Comprehensive rule table for all 54 classes mapping to status, disease name, safe/unsafe boolean, verdict text, and explanatory notes.
 - [ ] **Phase 7 — App (frontend fully polished)** → `docs/phase-7-app.md`   ⟵ **REVIEW 1 STOPS HERE**
 - [ ] *(after the review)* **Phase 8 — Finalise & push to new repo** → `docs/phase-8-finalise-and-push.md`
 
@@ -43,7 +43,7 @@ _Notes (fill in as you finish each phase):_
 - Phase 3: MobileNetV2 (54 classes) | Trainable params: 170,934 | Frozen base params: 2,257,984 | Total: 2,428,918 params.
 - Phase 4 (val accuracy): 95.03% validation accuracy across 10 epochs. Model saved to `model/model.keras`.
 - Phase 5 (TEST ACCURACY): 94.10% test accuracy across all 54 classes (loss 0.1771, macro avg F1 0.94).
-- Phase 6:
+- Phase 6: All 54 classes mapped in `src/verdicts.py` with 100% test coverage and honesty disclaimer.
 - Phase 7:
 - Phase 8 (repo URL, after the review):
 
