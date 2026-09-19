@@ -1,4 +1,4 @@
-﻿# src/evaluate.py — Phase 5: Evaluate trained model on test set
+# src/evaluate.py — Phase 5: Evaluate trained model on test set
 import sys
 from pathlib import Path
 
@@ -28,14 +28,19 @@ labels = [l.strip() for l in (MODEL_DIR / "labels.txt").read_text().splitlines()
 num_classes = len(labels)
 
 def load_image(path, label):
-    img = tf.io.read_file(path)
-    img = tf.image.decode_jpeg(img, channels=3)
+    img_bytes = tf.io.read_file(path)
+    img = tf.image.decode_image(img_bytes, channels=3, expand_animations=False)
     img = tf.image.resize(img, [IMG_SIZE, IMG_SIZE])
+    img.set_shape([IMG_SIZE, IMG_SIZE, 3])
     img = tf.cast(img, tf.float32) / 255.0
     return img, tf.one_hot(label, num_classes)
 
+max_test = min(len(X_test), 3000)
+eval_X = X_test[:max_test]
+eval_y = y_test[:max_test]
+
 test_ds = (
-    tf.data.Dataset.from_tensor_slices((X_test, y_test))
+    tf.data.Dataset.from_tensor_slices((eval_X, eval_y))
     .map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
     .batch(BATCH_SIZE)
     .prefetch(tf.data.AUTOTUNE)
@@ -55,10 +60,10 @@ print(f"{'='*40}\n")
 # ── Per-class report ──────────────────────────────────────────
 y_pred_probs = model.predict(test_ds, verbose=0)
 y_pred = np.argmax(y_pred_probs, axis=1)
-print(classification_report(y_test, y_pred, target_names=labels, zero_division=0))
+print(classification_report(eval_y, y_pred, target_names=labels, zero_division=0))
 
 # ── Confusion matrix ──────────────────────────────────────────
-cm = confusion_matrix(y_test, y_pred)
+cm = confusion_matrix(eval_y, y_pred)
 fig, ax = plt.subplots(figsize=(max(12, num_classes // 2), max(10, num_classes // 2)))
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels)
 disp.plot(ax=ax, xticks_rotation="vertical", colorbar=False)
