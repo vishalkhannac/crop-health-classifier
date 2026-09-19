@@ -30,7 +30,7 @@ Then work through the phases below in order, stopping where the scope file says 
 ## Progress (update this as you go)
 - [x] **Phase 1 — Data (multi-class, PlantVillage from GitHub)** → `docs/phase-1-data.md` — Complete: 54 classes (38 plant leaf diseases/health + 16 fresh/rotten produce), 66,638 images organised into `data/`.
 - [x] **Phase 2 — Preprocessing (+ save labels)** → `docs/phase-2-preprocessing.md` — Complete: 54 classes, stratified 70/15/15 split (Train: 93,294, Val: 19,992, Test: 19,992), `model/labels.txt` saved.
-- [ ] **Phase 3 — Model (softmax, multi-class)** → `docs/phase-3-model.md`
+- [x] **Phase 3 — Model (softmax, multi-class)** → `docs/phase-3-model.md` — Complete: MobileNetV2 base (frozen) + GAP + Dense(128) + Dropout(0.3) + Dense(54, softmax). 170,934 trainable params, 2,257,984 frozen params.
 - [ ] **Phase 4 — Training (one working run — not tuned yet)** → `docs/phase-4-training.md`
 - [ ] **Phase 5 — Evaluation (accuracy recorded, even if modest)** → `docs/phase-5-evaluation.md`
 - [ ] **Phase 6 — Verdict rules (disease + safe-to-consume)** → `docs/phase-6-verdicts.md`
@@ -40,7 +40,7 @@ Then work through the phases below in order, stopping where the scope file says 
 _Notes (fill in as you finish each phase):_
 - Phase 1 (class list + counts): 54 classes, 66,638 images total across PlantVillage (54,303 images) and Fresh/Rotten produce (12,335 images).
 - Phase 2 (num classes + set sizes): 54 classes | Train: 93,294 | Val: 19,992 | Test: 19,992 | Saved to `model/labels.txt` and `model/splits/`.
-- Phase 3:
+- Phase 3: MobileNetV2 (54 classes) | Trainable params: 170,934 | Frozen base params: 2,257,984 | Total: 2,428,918 params.
 - Phase 4 (val accuracy):
 - Phase 5 (TEST ACCURACY):
 - Phase 6:
