@@ -1,4 +1,4 @@
-﻿# How to Run — Plant & Vegetable Health Detection
+# How to Run — Plant & Vegetable Health Detection
 
 Upload a photo of a plant leaf or vegetable. The app reports the **status / class**, a **confidence %**, the **disease** (if any), and whether it is **safe to consume** — in plain words.
 
@@ -51,9 +51,8 @@ Result: `data/` has one subfolder per class (~38 plant classes + fresh/rotten fr
 
 ## 5. Run the app ← the main thing
 ```powershell
- = "C:\Users\kurtz\Downloads\python\Python\python.exe"
- = "D:\plant-veg-health\venv\Lib\site-packages"
-&  -m streamlit run D:\plant-veg-health\app.py
+# In PowerShell:
+& "C:\Users\kurtz\Downloads\python\Python\python.exe" "D:\plant-veg-health\run_app.py"
 ```
 Open **http://localhost:8501**, upload a photo, and read the result. Stop with **Ctrl+C**.
 
