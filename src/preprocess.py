@@ -1,4 +1,4 @@
-﻿# src/preprocess.py — Phase 2: Build train/val/test generators, save labels.txt
+# src/preprocess.py — Phase 2: Build train/val/test generators, save labels.txt
 import os, sys, json, shutil
 from pathlib import Path
 
@@ -21,7 +21,15 @@ BATCH_SIZE = 32
 SEED       = 42
 
 # ── Discover classes ──────────────────────────────────────────
-classes = sorted([d.name for d in DATA_DIR.iterdir() if d.is_dir() and any(d.glob("*.jpg"))])
+IMG_EXTS = ("*.jpg", "*.JPG", "*.jpeg", "*.JPEG", "*.png", "*.PNG")
+
+def get_class_images(class_dir):
+    imgs = []
+    for ext in IMG_EXTS:
+        imgs.extend(class_dir.glob(ext))
+    return imgs
+
+classes = sorted([d.name for d in DATA_DIR.iterdir() if d.is_dir() and len(get_class_images(d)) > 0])
 num_classes = len(classes)
 class_to_idx = {c: i for i, c in enumerate(classes)}
 
@@ -30,7 +38,7 @@ print(f"Found {num_classes} classes.")
 # ── Collect all image paths and labels ───────────────────────
 all_paths, all_labels = [], []
 for cls in classes:
-    imgs = list((DATA_DIR / cls).glob("*.jpg"))
+    imgs = get_class_images(DATA_DIR / cls)
     all_paths.extend([str(p) for p in imgs])
     all_labels.extend([class_to_idx[cls]] * len(imgs))
 

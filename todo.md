@@ -29,7 +29,7 @@ Then work through the phases below in order, stopping where the scope file says 
 
 ## Progress (update this as you go)
 - [x] **Phase 1 — Data (multi-class, PlantVillage from GitHub)** → `docs/phase-1-data.md` — Complete: 54 classes (38 plant leaf diseases/health + 16 fresh/rotten produce), 66,638 images organised into `data/`.
-- [ ] **Phase 2 — Preprocessing (+ save labels)** → `docs/phase-2-preprocessing.md`
+- [x] **Phase 2 — Preprocessing (+ save labels)** → `docs/phase-2-preprocessing.md` — Complete: 54 classes, stratified 70/15/15 split (Train: 93,294, Val: 19,992, Test: 19,992), `model/labels.txt` saved.
 - [ ] **Phase 3 — Model (softmax, multi-class)** → `docs/phase-3-model.md`
 - [ ] **Phase 4 — Training (one working run — not tuned yet)** → `docs/phase-4-training.md`
 - [ ] **Phase 5 — Evaluation (accuracy recorded, even if modest)** → `docs/phase-5-evaluation.md`
@@ -39,7 +39,7 @@ Then work through the phases below in order, stopping where the scope file says 
 
 _Notes (fill in as you finish each phase):_
 - Phase 1 (class list + counts): 54 classes, 66,638 images total across PlantVillage (54,303 images) and Fresh/Rotten produce (12,335 images).
-- Phase 2 (num classes + set sizes):
+- Phase 2 (num classes + set sizes): 54 classes | Train: 93,294 | Val: 19,992 | Test: 19,992 | Saved to `model/labels.txt` and `model/splits/`.
 - Phase 3:
 - Phase 4 (val accuracy):
 - Phase 5 (TEST ACCURACY):
