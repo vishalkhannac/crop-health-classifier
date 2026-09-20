@@ -22,19 +22,17 @@ def build_model(num_classes: int, img_size: int = 224) -> tf.keras.Model:
         include_top=False,
         weights="imagenet",
     )
-    # Unfreeze top layers for fine-tuning produce/disease morphological features
-    base.trainable = True
-    for layer in base.layers[:-20]:
-        layer.trainable = False
+    base.trainable = False
 
     inputs = tf.keras.Input(shape=(img_size, img_size, 3))
     x = base(inputs, training=False)
     x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dense(128, activation="relu")(x)
+    x = layers.Dense(256, activation="relu")(x)
     x = layers.Dropout(0.3)(x)
     outputs = layers.Dense(num_classes, activation="softmax")(x)
 
     model = Model(inputs, outputs, name="plant_veg_health")
+    model.base_model = base
     return model
 
 

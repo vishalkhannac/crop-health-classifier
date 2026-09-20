@@ -68,24 +68,42 @@ def make_dataset(paths, labels, augment_flag=False, shuffle=False):
 train_ds = make_dataset(X_train, y_train, augment_flag=True, shuffle=True)
 val_ds   = make_dataset(X_val,   y_val,   augment_flag=False, shuffle=False)
 
-# ── Build & compile ───────────────────────────────────────────
+# ── Stage 1: Train classification head with frozen base ─────────
+print("\n[Stage 1/2] Training classification head with frozen base (4 epochs) ...")
 model = build_model(num_classes)
 model.compile(
-    optimizer=tf.keras.optimizers.Adam(learning_rate=5e-4),
+    optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3),
     loss="categorical_crossentropy",
     metrics=["accuracy"],
 )
 
-# ── Train ─────────────────────────────────────────────────────
-print(f"\nTraining for {EPOCHS} epochs ({len(X_train)} train samples, {len(X_val)} val samples) ...")
-history = model.fit(
+history_1 = model.fit(
     train_ds,
     validation_data=val_ds,
-    epochs=EPOCHS,
+    epochs=4,
     verbose=1,
 )
 
-val_acc = history.history["val_accuracy"][-1]
+# ── Stage 2: Fine-tune top layers of MobileNetV2 with low lr ───
+print("\n[Stage 2/2] Fine-tuning top convolutional layers (4 epochs) ...")
+model.base_model.trainable = True
+for layer in model.base_model.layers[:-30]:
+    layer.trainable = False
+
+model.compile(
+    optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
+    loss="categorical_crossentropy",
+    metrics=["accuracy"],
+)
+
+history_2 = model.fit(
+    train_ds,
+    validation_data=val_ds,
+    epochs=4,
+    verbose=1,
+)
+
+val_acc = history_2.history["val_accuracy"][-1]
 print(f"\nFinal validation accuracy: {val_acc*100:.2f}%")
 
 # ── Save model ────────────────────────────────────────────────
@@ -93,14 +111,23 @@ model_path = MODEL_DIR / "model.keras"
 model.save(str(model_path))
 print(f"Model saved to {model_path}")
 
-# ── Save training curves ──────────────────────────────────────
+# ── Save combined training curves ─────────────────────────────
+all_acc = history_1.history["accuracy"] + history_2.history["accuracy"]
+all_val_acc = history_1.history["val_accuracy"] + history_2.history["val_accuracy"]
+all_loss = history_1.history["loss"] + history_2.history["loss"]
+all_val_loss = history_1.history["val_loss"] + history_2.history["val_loss"]
+
 fig, axes = plt.subplots(1, 2, figsize=(12, 4))
-axes[0].plot(history.history["accuracy"],     label="Train")
-axes[0].plot(history.history["val_accuracy"], label="Val")
+axes[0].plot(all_acc,     label="Train")
+axes[0].plot(all_val_acc, label="Val")
+axes[0].axvline(x=3.5, color="gray", linestyle="--", label="Fine-tuning start")
 axes[0].set_title("Accuracy"); axes[0].legend(); axes[0].set_xlabel("Epoch")
-axes[1].plot(history.history["loss"],     label="Train")
-axes[1].plot(history.history["val_loss"], label="Val")
+
+axes[1].plot(all_loss,     label="Train")
+axes[1].plot(all_val_loss, label="Val")
+axes[1].axvline(x=3.5, color="gray", linestyle="--", label="Fine-tuning start")
 axes[1].set_title("Loss"); axes[1].legend(); axes[1].set_xlabel("Epoch")
+
 plt.tight_layout()
 curves_path = MODEL_DIR / "training_curves.png"
 plt.savefig(str(curves_path), dpi=100)
