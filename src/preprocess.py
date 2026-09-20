@@ -36,14 +36,17 @@ class_to_idx = {c: i for i, c in enumerate(classes)}
 print(f"Found {num_classes} classes.")
 
 # ── Collect balanced image paths and labels across all classes ──
-MAX_PER_CLASS = 150  # Balanced representation across all 102 classes
+MAX_PER_CLASS = 150  # Balanced representation across all 108 classes
 all_paths, all_labels = [], []
 for cls in classes:
     imgs = get_class_images(DATA_DIR / cls)
     if len(imgs) > MAX_PER_CLASS:
-        # Sample deterministically
+        # Prioritize sliced/multi/user augmented samples
+        priority = [p for p in imgs if any(k in p.name.lower() for k in ("user_", "sliced_", "multi_"))]
+        others = [p for p in imgs if p not in priority]
         random.seed(SEED)
-        imgs = random.sample(imgs, MAX_PER_CLASS)
+        sampled_others = random.sample(others, max(0, MAX_PER_CLASS - len(priority))) if len(priority) < MAX_PER_CLASS else []
+        imgs = (priority + sampled_others)[:MAX_PER_CLASS]
     all_paths.extend([str(p) for p in imgs])
     all_labels.extend([class_to_idx[cls]] * len(imgs))
 
