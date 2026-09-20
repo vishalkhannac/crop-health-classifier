@@ -66,6 +66,7 @@ rotten_eggplant
 rotten_grape
 rotten_guava
 rotten_jujube
+rotten_okra
 rotten_orange
 rotten_pomegranate
 rotten_potato
