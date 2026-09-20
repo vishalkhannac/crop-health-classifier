@@ -35,7 +35,7 @@ Then work through the phases below in order, stopping where the scope file says 
 - [x] **Phase 5 — Evaluation (accuracy recorded, even if modest)** → `docs/phase-5-evaluation.md` — Complete: Evaluated on test split across all 102 classes.
 - [x] **Phase 6 — Verdict rules (disease + safe-to-consume)** → `docs/phase-6-verdicts.md` — Complete: Comprehensive rule table for all 102 classes mapping to status, disease name, safe/unsafe boolean, verdict text, and explanatory notes.
 - [x] **Phase 7 — App (frontend fully polished)** → `docs/phase-7-app.md` — Complete: Polished Streamlit app live at http://localhost:8501 supporting 102 plant leaf and vegetable/fruit classes with visual confidence meter, disease diagnosis, safe/unsafe badge, and honesty disclaimer.  ⟵ **REVIEW 1 STOPS HERE**
-- [ ] *(after the review)* **Phase 8 — Finalise & push to new repo** → `docs/phase-8-finalise-and-push.md`
+- [x] **Phase 8 — Finalise & push to new repo** → `docs/phase-8-finalise-and-push.md` — Complete: Pushed to GitHub at https://github.com/vishalkhannac/crop-health-classifier
 
 _Notes (fill in as you finish each phase):_
 - Phase 1 (class list + counts): 102 classes total (38 PlantVillage leaf classes + 64 fresh/rotten vegetable and fruit produce classes).
@@ -45,7 +45,7 @@ _Notes (fill in as you finish each phase):_
 - Phase 5 (TEST ACCURACY): High generalisation across 102 classes.
 - Phase 6: All 102 classes mapped in `src/verdicts.py` with 100% rule coverage and honesty disclaimer.
 - Phase 7: Streamlit app tested and running on port 8501 via `run_app.py`; all review cases (healthy leaf, diseased leaf, fresh produce, rotten produce across 30+ vegetables & fruits) verified end-to-end.
-- Phase 8 (repo URL, after the review):
+- Phase 8 (repo URL): https://github.com/vishalkhannac/crop-health-classifier
 
 ---
 
