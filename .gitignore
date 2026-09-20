@@ -19,6 +19,7 @@ __pycache__/
 D:\tmp\
 get-pip*.py
 
-# OS
+# OS & Archives
 .DS_Store
 Thumbs.db
+*.zip
