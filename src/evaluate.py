@@ -21,8 +21,8 @@ MODEL_DIR  = ROOT / "model"
 SPLITS_DIR = MODEL_DIR / "splits"
 
 # ── Load test set ─────────────────────────────────────────────
-X_test = np.load(SPLITS_DIR / "X_test.npy", allow_pickle=True)
-y_test = np.load(SPLITS_DIR / "y_test.npy", allow_pickle=True)
+X_test = list(np.load(SPLITS_DIR / "X_test.npy", allow_pickle=True).astype(str))
+y_test = np.load(SPLITS_DIR / "y_test.npy").astype(np.int32)
 
 labels = [l.strip() for l in (MODEL_DIR / "labels.txt").read_text().splitlines() if l.strip()]
 num_classes = len(labels)
@@ -35,9 +35,8 @@ def load_image(path, label):
     img = tf.cast(img, tf.float32) / 255.0
     return img, tf.one_hot(label, num_classes)
 
-max_test = min(len(X_test), 3000)
-eval_X = X_test[:max_test]
-eval_y = y_test[:max_test]
+eval_X = X_test
+eval_y = y_test
 
 test_ds = (
     tf.data.Dataset.from_tensor_slices((eval_X, eval_y))

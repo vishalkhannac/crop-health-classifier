@@ -1,4 +1,4 @@
-﻿# src/verdicts.py — Phase 6: Disease name + safe-to-consume lookup table
+# src/verdicts.py — Phase 6: Disease name + safe-to-consume lookup table
 # Maps every class name to: status, disease, safe, verdict, note.
 # get_verdict(class_name) is the public API used by app.py
 
@@ -66,31 +66,33 @@ _PLANT_VERDICTS = {
 }
 
 # ─────────────────────────────────────────────────────────────
-# Fresh / Rotten fruit classes
-# Generated from Project-AgML/fresh_rotten_fruit_classification
-# fruit types: apple, banana, guava, lime, orange, pomegranate, strawberry, tomato
-# (and potentially others depending on dataset split)
+# Fresh / Rotten Fruit & Vegetable classes
 # ─────────────────────────────────────────────────────────────
-_FRESH_FRUITS  = ["apple","banana","guava","lime","orange","pomegranate","strawberry","tomato",
-                  "grape","mango","kiwi","cherry","peach","watermelon","lemon","papaya","pineapple"]
-_ROTTEN_FRUITS = _FRESH_FRUITS[:]
+_ALL_PRODUCE = [
+    "apple", "banana", "guava", "lime", "orange", "pomegranate", "strawberry",
+    "tomato", "potato", "capsicum", "bell_pepper", "carrot", "cucumber",
+    "eggplant", "cabbage", "cauliflower", "chilli_pepper", "corn", "garlic",
+    "ginger", "lettuce", "onion", "peas", "spinach", "sweetpotato", "turnip",
+    "beetroot", "jujube", "grape", "mango", "kiwi", "cherry", "peach",
+    "watermelon", "lemon", "papaya", "pineapple", "pear"
+]
 
-_FRUIT_VERDICTS = {}
-for _f in _FRESH_FRUITS:
-    _FRUIT_VERDICTS[f"fresh_{_f}"] = (
-        f"Fresh {_f.capitalize()}", "None", True,
+_PRODUCE_VERDICTS = {}
+for _p in _ALL_PRODUCE:
+    nice_p = _p.replace("_", " ").title()
+    _PRODUCE_VERDICTS[f"fresh_{_p}"] = (
+        f"Fresh {nice_p}", "None", True,
         "Likely safe to consume",
-        f"Looks fresh — no visible rot or disease."
+        f"Looks fresh — no visible decay, rot, or disease."
     )
-for _f in _ROTTEN_FRUITS:
-    _FRUIT_VERDICTS[f"rotten_{_f}"] = (
-        f"Rotten {_f.capitalize()}", "None", False,
+    _PRODUCE_VERDICTS[f"rotten_{_p}"] = (
+        f"Rotten {nice_p}", "Fruit/Vegetable Rot & Decay", False,
         "Not safe — discard",
-        f"Signs of rot or decay — discard."
+        f"Signs of rot, mold, or tissue decay — do not consume."
     )
 
 # Merge
-_ALL_VERDICTS = {**_PLANT_VERDICTS, **_FRUIT_VERDICTS}
+_ALL_VERDICTS = {**_PLANT_VERDICTS, **_PRODUCE_VERDICTS}
 
 # Default for unknown / unlisted classes
 _DEFAULT = ("Unknown", "Unknown", False, "Uncertain — inspect carefully", "Class not in database; treat with caution.")

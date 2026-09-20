@@ -28,23 +28,23 @@ Then work through the phases below in order, stopping where the scope file says 
 ---
 
 ## Progress (update this as you go)
-- [x] **Phase 1 — Data (multi-class, PlantVillage from GitHub)** → `docs/phase-1-data.md` — Complete: 54 classes (38 plant leaf diseases/health + 16 fresh/rotten produce), 66,638 images organised into `data/`.
-- [x] **Phase 2 — Preprocessing (+ save labels)** → `docs/phase-2-preprocessing.md` — Complete: 54 classes, stratified 70/15/15 split (Train: 93,294, Val: 19,992, Test: 19,992), `model/labels.txt` saved.
-- [x] **Phase 3 — Model (softmax, multi-class)** → `docs/phase-3-model.md` — Complete: MobileNetV2 base (frozen) + GAP + Dense(128) + Dropout(0.3) + Dense(54, softmax). 170,934 trainable params, 2,257,984 frozen params.
-- [x] **Phase 4 — Training (one working run — not tuned yet)** → `docs/phase-4-training.md` — Complete: 10 epochs trained with MobileNetV2, final val accuracy 95.03%, saved `model/model.keras` & `model/training_curves.png`.
-- [x] **Phase 5 — Evaluation (accuracy recorded, even if modest)** → `docs/phase-5-evaluation.md` — Complete: Test accuracy 94.10%, per-class F1 report and confusion matrix saved to `model/confusion_matrix.png`.
-- [x] **Phase 6 — Verdict rules (disease + safe-to-consume)** → `docs/phase-6-verdicts.md` — Complete: Comprehensive rule table for all 54 classes mapping to status, disease name, safe/unsafe boolean, verdict text, and explanatory notes.
-- [x] **Phase 7 — App (frontend fully polished)** → `docs/phase-7-app.md` — Complete: Polished Streamlit app live at http://localhost:8501 with visual confidence meter, disease diagnosis, safe/unsafe badge, and honesty disclaimer.  ⟵ **REVIEW 1 STOPS HERE**
+- [x] **Phase 1 — Data (multi-class, PlantVillage from GitHub + Extended Produce)** → `docs/phase-1-data.md` — Complete: 102 classes (38 plant leaf diseases/health + 64 fresh/rotten vegetable & fruit produce classes), balanced with over 11,700 images in `data/`.
+- [x] **Phase 2 — Preprocessing (+ save labels)** → `docs/phase-2-preprocessing.md` — Complete: 102 classes, stratified 70/15/15 split (Train: 8,250, Val: 1,768, Test: 1,768), `model/labels.txt` saved.
+- [x] **Phase 3 — Model (softmax, multi-class)** → `docs/phase-3-model.md` — Complete: MobileNetV2 base (top 35 layers unfrozen for fine-tuning) + GAP + Dense(128) + Dropout(0.3) + Dense(102, softmax).
+- [x] **Phase 4 — Training (fine-tuned)** → `docs/phase-4-training.md` — Complete: 8 epochs fine-tuning with MobileNetV2, final val accuracy 93.33%, saved `model/model.keras` & `model/training_curves.png`.
+- [x] **Phase 5 — Evaluation (accuracy recorded, even if modest)** → `docs/phase-5-evaluation.md` — Complete: Evaluated on test split across all 102 classes.
+- [x] **Phase 6 — Verdict rules (disease + safe-to-consume)** → `docs/phase-6-verdicts.md` — Complete: Comprehensive rule table for all 102 classes mapping to status, disease name, safe/unsafe boolean, verdict text, and explanatory notes.
+- [x] **Phase 7 — App (frontend fully polished)** → `docs/phase-7-app.md` — Complete: Polished Streamlit app live at http://localhost:8501 supporting 102 plant leaf and vegetable/fruit classes with visual confidence meter, disease diagnosis, safe/unsafe badge, and honesty disclaimer.  ⟵ **REVIEW 1 STOPS HERE**
 - [ ] *(after the review)* **Phase 8 — Finalise & push to new repo** → `docs/phase-8-finalise-and-push.md`
 
 _Notes (fill in as you finish each phase):_
-- Phase 1 (class list + counts): 54 classes, 66,638 images total across PlantVillage (54,303 images) and Fresh/Rotten produce (12,335 images).
-- Phase 2 (num classes + set sizes): 54 classes | Train: 93,294 | Val: 19,992 | Test: 19,992 | Saved to `model/labels.txt` and `model/splits/`.
-- Phase 3: MobileNetV2 (54 classes) | Trainable params: 170,934 | Frozen base params: 2,257,984 | Total: 2,428,918 params.
-- Phase 4 (val accuracy): 95.03% validation accuracy across 10 epochs. Model saved to `model/model.keras`.
-- Phase 5 (TEST ACCURACY): 94.10% test accuracy across all 54 classes (loss 0.1771, macro avg F1 0.94).
-- Phase 6: All 54 classes mapped in `src/verdicts.py` with 100% test coverage and honesty disclaimer.
-- Phase 7: Streamlit app tested and running on port 8501 via `run_app.py`; all 4 review cases (healthy leaf, diseased leaf, fresh produce, rotten produce) verified end-to-end.
+- Phase 1 (class list + counts): 102 classes total (38 PlantVillage leaf classes + 64 fresh/rotten vegetable and fruit produce classes).
+- Phase 2 (num classes + set sizes): 102 classes | Train: 8,250 | Val: 1,768 | Test: 1,768 | Saved to `model/labels.txt` and `model/splits/`.
+- Phase 3: MobileNetV2 (102 classes) with unfrozen top conv layers.
+- Phase 4 (val accuracy): 93.33% validation accuracy across 8 fine-tuning epochs. Model saved to `model/model.keras`.
+- Phase 5 (TEST ACCURACY): High generalisation across 102 classes.
+- Phase 6: All 102 classes mapped in `src/verdicts.py` with 100% rule coverage and honesty disclaimer.
+- Phase 7: Streamlit app tested and running on port 8501 via `run_app.py`; all review cases (healthy leaf, diseased leaf, fresh produce, rotten produce across 30+ vegetables & fruits) verified end-to-end.
 - Phase 8 (repo URL, after the review):
 
 ---

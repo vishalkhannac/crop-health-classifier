@@ -27,10 +27,10 @@ SPLITS_DIR = MODEL_DIR / "splits"
 
 # ── Load splits ───────────────────────────────────────────────
 print("Loading splits ...")
-X_train = np.load(SPLITS_DIR / "X_train.npy", allow_pickle=True)
-y_train = np.load(SPLITS_DIR / "y_train.npy", allow_pickle=True)
-X_val   = np.load(SPLITS_DIR / "X_val.npy",   allow_pickle=True)
-y_val   = np.load(SPLITS_DIR / "y_val.npy",   allow_pickle=True)
+X_train = list(np.load(SPLITS_DIR / "X_train.npy", allow_pickle=True).astype(str))
+y_train = np.load(SPLITS_DIR / "y_train.npy").astype(np.int32)
+X_val   = list(np.load(SPLITS_DIR / "X_val.npy",   allow_pickle=True).astype(str))
+y_val   = np.load(SPLITS_DIR / "y_val.npy").astype(np.int32)
 
 labels  = [l.strip() for l in (MODEL_DIR / "labels.txt").read_text().splitlines() if l.strip()]
 num_classes = len(labels)
@@ -65,23 +65,21 @@ def make_dataset(paths, labels, augment_flag=False, shuffle=False):
     return ds
 
 
-# For an agile, working Review 1 training run, use a representative slice for fast CPU iteration
-max_train = min(len(X_train), 15000)
-max_val   = min(len(X_val), 3000)
+train_ds = make_dataset(X_train, y_train, augment_flag=True, shuffle=True)
+val_ds   = make_dataset(X_val,   y_val,   augment_flag=False, shuffle=False)
 
-train_ds = make_dataset(X_train[:max_train], y_train[:max_train], augment_flag=True, shuffle=True)
-val_ds   = make_dataset(X_val[:max_val],     y_val[:max_val],     augment_flag=False, shuffle=False)
+EPOCHS     = 8
 
 # ── Build & compile ───────────────────────────────────────────
 model = build_model(num_classes)
 model.compile(
-    optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3),
+    optimizer=tf.keras.optimizers.Adam(learning_rate=3e-4),
     loss="categorical_crossentropy",
     metrics=["accuracy"],
 )
 
 # ── Train ─────────────────────────────────────────────────────
-print(f"\nTraining for {EPOCHS} epochs ({max_train} train samples, {max_val} val samples) ...")
+print(f"\nTraining for {EPOCHS} epochs ({len(X_train)} train samples, {len(X_val)} val samples) ...")
 history = model.fit(
     train_ds,
     validation_data=val_ds,

@@ -1,4 +1,4 @@
-﻿# src/model.py — Phase 3: MobileNetV2 transfer-learning model
+# src/model.py — Phase 3: MobileNetV2 transfer-learning model
 import sys
 from pathlib import Path
 
@@ -22,10 +22,13 @@ def build_model(num_classes: int, img_size: int = 224) -> tf.keras.Model:
         include_top=False,
         weights="imagenet",
     )
-    base.trainable = False          # freeze the pre-trained weights
+    # Unfreeze top layers for fine-tuning produce/disease morphological features
+    base.trainable = True
+    for layer in base.layers[:-35]:
+        layer.trainable = False
 
     inputs = tf.keras.Input(shape=(img_size, img_size, 3))
-    x = base(inputs, training=False)
+    x = base(inputs, training=True)
     x = layers.GlobalAveragePooling2D()(x)
     x = layers.Dense(128, activation="relu")(x)
     x = layers.Dropout(0.3)(x)

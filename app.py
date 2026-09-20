@@ -1,4 +1,4 @@
-﻿# app.py — Phase 7: Polished Streamlit App
+# app.py — Phase 7: Polished Streamlit App
 # Plant & Vegetable Health Detection
 # Predicts class, shows confidence meter, disease name, safe-to-consume verdict.
 
@@ -147,7 +147,7 @@ with col_left:
     )
     if uploaded:
         pil_img = Image.open(uploaded)
-        st.image(pil_img, caption="Uploaded photo", use_column_width=True)
+        st.image(pil_img, caption="Uploaded photo", use_container_width=True)
 
 with col_right:
     if not uploaded:

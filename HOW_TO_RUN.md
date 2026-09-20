@@ -26,27 +26,28 @@ C:\Users\kurtz\Downloads\python\Python\python.exe <script>
 
 ## 2. Install packages (once — already done if venv/Lib/site-packages is populated)
 ```powershell
- = "C:\Users\kurtz\Downloads\python\Python\python.exe"
- = "D:\plant-veg-health\venv\Lib\site-packages"
-C:\Users\kurtz\AppData\Local\Temp = "D:\tmp"
-C:\Users\kurtz\AppData\Local\Temp  = "D:\tmp"
-&  -m pip install tensorflow==2.13.0 opencv-python-headless scikit-learn streamlit datasets huggingface_hub --target  --cache-dir "D:\pip-cache"
+$py = "C:\Users\kurtz\Downloads\python\Python\python.exe"
+$env:PYTHONPATH = "D:\plant-veg-health\venv\Lib\site-packages"
+$env:TEMP = "D:\tmp"
+$env:TMP = "D:\tmp"
+$env:HF_HOME = "D:\hf_home"
+& $py -m pip install tensorflow==2.13.0 opencv-python-headless scikit-learn streamlit datasets huggingface_hub --target "D:\plant-veg-health\venv\Lib\site-packages" --cache-dir "D:\pip-cache"
 ```
 
-## 3. Get the data (only needed for training)
+## 3. Get the data (only needed for retraining)
 ```powershell
- = "C:\Users\kurtz\Downloads\python\Python\python.exe"
+$py = "C:\Users\kurtz\Downloads\python\Python\python.exe"
 # Downloads PlantVillage + Fresh/Rotten datasets from HuggingFace (no login needed)
-&  D:\plant-veg-health\src\get_data.py
+& $py D:\plant-veg-health\src\get_data.py
 ```
-Result: `data/` has one subfolder per class (~38 plant classes + fresh/rotten fruit/veg classes).
+Result: `data/` has one subfolder per class (102 classes across 38 plant leaf diseases and 64 fresh/rotten vegetable & fruit produce classes).
 
 ## 4. Run the pipeline (in this order)
 ```powershell
- = "C:\Users\kurtz\Downloads\python\Python\python.exe"
-&  D:\plant-veg-health\src\preprocess.py   # builds train/val/test splits, saves model/labels.txt
-&  D:\plant-veg-health\src\train.py         # trains, saves model/model.keras + curves
-&  D:\plant-veg-health\src\evaluate.py      # test accuracy + confusion matrix
+$py = "C:\Users\kurtz\Downloads\python\Python\python.exe"
+& $py D:\plant-veg-health\src\preprocess.py   # builds train/val/test splits, saves model/labels.txt
+& $py D:\plant-veg-health\src\train.py         # trains, saves model/model.keras + curves
+& $py D:\plant-veg-health\src\evaluate.py      # test accuracy + confusion matrix
 ```
 
 ## 5. Run the app ← the main thing
@@ -61,8 +62,8 @@ Open **http://localhost:8501**, upload a photo, and read the result. Stop with *
 ## Troubleshooting
 - **ModuleNotFoundError** → make sure `sys.path` includes `venv\Lib\site-packages`; each script adds it automatically.
 - **App can't find model or labels** → run `preprocess.py` then `train.py` first.
-- **Training is slow** → normal without GPU; 10 epochs on CPU takes ~1–3 hours depending on dataset size.
+- **Training is slow** → normal without GPU; fine-tuning on CPU takes ~1–2 hours depending on dataset size.
 - **Disk space** → all data, cache, and model files are on D: (which has ~150 GB free).
 
 ## Current status
-**Review 1 build in progress.** All source files created; packages installed. Running data → train → evaluate pipeline.
+**Review 1 scope complete.** Phases 1–7 fully built, tested, and verified. 102 classes covering comprehensive plant leaf diseases and fresh/decayed vegetables/fruits. Polished Streamlit UI live at `http://localhost:8501`.

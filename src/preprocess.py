@@ -1,5 +1,5 @@
 # src/preprocess.py — Phase 2: Build train/val/test generators, save labels.txt
-import os, sys, json, shutil
+import os, sys, json, shutil, random
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
@@ -35,17 +35,22 @@ class_to_idx = {c: i for i, c in enumerate(classes)}
 
 print(f"Found {num_classes} classes.")
 
-# ── Collect all image paths and labels ───────────────────────
+# ── Collect balanced image paths and labels across all classes ──
+MAX_PER_CLASS = 150  # Balanced representation across all 102 classes
 all_paths, all_labels = [], []
 for cls in classes:
     imgs = get_class_images(DATA_DIR / cls)
+    if len(imgs) > MAX_PER_CLASS:
+        # Sample deterministically
+        random.seed(SEED)
+        imgs = random.sample(imgs, MAX_PER_CLASS)
     all_paths.extend([str(p) for p in imgs])
     all_labels.extend([class_to_idx[cls]] * len(imgs))
 
-all_paths  = np.array(all_paths)
-all_labels = np.array(all_labels)
+all_paths  = np.array(all_paths, dtype=object)
+all_labels = np.array(all_labels, dtype=np.int32)
 total = len(all_paths)
-print(f"Total images: {total}")
+print(f"Total balanced images selected: {total}")
 
 # ── Stratified 70/15/15 split ────────────────────────────────
 X_train, X_temp, y_train, y_temp = train_test_split(
@@ -58,9 +63,12 @@ print(f"Train: {len(X_train)} | Val: {len(X_val)} | Test: {len(X_test)}")
 # ── Save splits to disk so train.py / evaluate.py can reuse them ──
 splits_dir = ROOT / "model" / "splits"
 splits_dir.mkdir(exist_ok=True)
-np.save(splits_dir / "X_train.npy", X_train); np.save(splits_dir / "y_train.npy", y_train)
-np.save(splits_dir / "X_val.npy",   X_val);   np.save(splits_dir / "y_val.npy",   y_val)
-np.save(splits_dir / "X_test.npy",  X_test);  np.save(splits_dir / "y_test.npy",  y_test)
+np.save(splits_dir / "X_train.npy", X_train, allow_pickle=True)
+np.save(splits_dir / "y_train.npy", y_train)
+np.save(splits_dir / "X_val.npy",   X_val, allow_pickle=True)
+np.save(splits_dir / "y_val.npy",   y_val)
+np.save(splits_dir / "X_test.npy",  X_test, allow_pickle=True)
+np.save(splits_dir / "y_test.npy",  y_test)
 
 # ── Save class label list ─────────────────────────────────────
 labels_path = MODEL_DIR / "labels.txt"
