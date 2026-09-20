@@ -18,8 +18,8 @@ sys.path.insert(0, str(ROOT / "src"))
 from model import build_model
 
 IMG_SIZE   = 224
-BATCH_SIZE = 32
-EPOCHS     = 10
+BATCH_SIZE = 16
+EPOCHS     = 6
 SEED       = 42
 
 MODEL_DIR  = ROOT / "model"
@@ -57,7 +57,7 @@ def augment(img, label):
 def make_dataset(paths, labels, augment_flag=False, shuffle=False):
     ds = tf.data.Dataset.from_tensor_slices((paths, labels))
     if shuffle:
-        ds = ds.shuffle(min(len(paths), 10000), seed=SEED)
+        ds = ds.shuffle(min(len(paths), 5000), seed=SEED)
     ds = ds.map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
     if augment_flag:
         ds = ds.map(augment, num_parallel_calls=tf.data.AUTOTUNE)
@@ -68,12 +68,10 @@ def make_dataset(paths, labels, augment_flag=False, shuffle=False):
 train_ds = make_dataset(X_train, y_train, augment_flag=True, shuffle=True)
 val_ds   = make_dataset(X_val,   y_val,   augment_flag=False, shuffle=False)
 
-EPOCHS     = 8
-
 # ── Build & compile ───────────────────────────────────────────
 model = build_model(num_classes)
 model.compile(
-    optimizer=tf.keras.optimizers.Adam(learning_rate=3e-4),
+    optimizer=tf.keras.optimizers.Adam(learning_rate=5e-4),
     loss="categorical_crossentropy",
     metrics=["accuracy"],
 )

@@ -24,11 +24,11 @@ def build_model(num_classes: int, img_size: int = 224) -> tf.keras.Model:
     )
     # Unfreeze top layers for fine-tuning produce/disease morphological features
     base.trainable = True
-    for layer in base.layers[:-35]:
+    for layer in base.layers[:-20]:
         layer.trainable = False
 
     inputs = tf.keras.Input(shape=(img_size, img_size, 3))
-    x = base(inputs, training=True)
+    x = base(inputs, training=False)
     x = layers.GlobalAveragePooling2D()(x)
     x = layers.Dense(128, activation="relu")(x)
     x = layers.Dropout(0.3)(x)
