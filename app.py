@@ -2,18 +2,25 @@
 import sys
 from pathlib import Path
 
-# Resolve venv site-packages
-ROOT = Path(__file__).parent
-VENV_SITE = ROOT / "venv" / "Lib" / "site-packages"
-if VENV_SITE.exists():
-    sys.path.insert(0, str(VENV_SITE))
+# Resolve venv site-packages and src paths
+ROOT = Path(__file__).resolve().parent
 
-import streamlit as st
-import numpy as np
-from PIL import Image
-import io
+candidate_site_packages = [
+    ROOT / "venv" / "Lib" / "site-packages",
+    Path(r"D:\plant-veg-health\venv\Lib\site-packages"),
+    Path(r"C:\Users\kurtz\Downloads\MLMProjectFeed\venv\Lib\site-packages"),
+]
 
-sys.path.insert(0, str(ROOT / "src"))
+for p in candidate_site_packages:
+    if p.exists() and str(p) not in sys.path:
+        sys.path.insert(0, str(p))
+
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+if str(ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(ROOT / "src"))
+if Path(r"D:\plant-veg-health\src").exists() and str(Path(r"D:\plant-veg-health\src")) not in sys.path:
+    sys.path.insert(0, str(Path(r"D:\plant-veg-health\src")))
 import detector
 from verdicts import get_verdict, HONESTY_LINE
 
@@ -78,9 +85,22 @@ st.markdown("""
 @st.cache_resource(show_spinner="Loading model …")
 def load_model_and_labels():
     import tensorflow as tf
-    model_path  = ROOT / "model" / "model.keras"
-    labels_path = ROOT / "model" / "labels.txt"
-    if not model_path.exists() or not labels_path.exists():
+    candidate_model_dirs = [
+        ROOT / "model",
+        Path(r"D:\plant-veg-health\model"),
+        Path(r"C:\Users\kurtz\Downloads\MLMProjectFeed\model"),
+    ]
+    model_path = None
+    labels_path = None
+    for d in candidate_model_dirs:
+        m = d / "model.keras"
+        l = d / "labels.txt"
+        if m.exists() and l.exists():
+            model_path = m
+            labels_path = l
+            break
+            
+    if model_path is None or labels_path is None:
         return None, None
     model  = tf.keras.models.load_model(str(model_path))
     labels = [l.strip() for l in labels_path.read_text(encoding="utf-8").splitlines() if l.strip()]

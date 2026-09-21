@@ -1,18 +1,24 @@
 @echo off
-title Plant & Vegetable Health Analyzer (Offline Mode)
+title Plant and Vegetable Health Analyzer (Offline Mode)
 echo ============================================================
-echo   Starting Plant & Vegetable Health Analyzer (Offline)
+echo   Starting Plant and Vegetable Health Analyzer (Offline)
 echo ============================================================
 
-set STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
-set STREAMLIT_SERVER_HEADLESS=false
-set HF_HUB_OFFLINE=1
-set TRANSFORMERS_OFFLINE=1
+set "STREAMLIT_BROWSER_GATHER_USAGE_STATS=false"
+set "STREAMLIT_SERVER_HEADLESS=false"
+set "HF_HUB_OFFLINE=1"
+set "TRANSFORMERS_OFFLINE=1"
 
+:: Set PYTHONPATH to ensure site-packages and src are discoverable
+set "PYTHONPATH=D:\plant-veg-health\venv\Lib\site-packages;%~dp0venv\Lib\site-packages;%~dp0src;D:\plant-veg-health\src;%PYTHONPATH%"
+
+:: Find Python executable
 if exist "C:\Users\kurtz\Downloads\python\Python\python.exe" (
     set "PY_EXE=C:\Users\kurtz\Downloads\python\Python\python.exe"
 ) else if exist "%~dp0venv\Scripts\python.exe" (
     set "PY_EXE=%~dp0venv\Scripts\python.exe"
+) else if exist "D:\plant-veg-health\venv\Scripts\python.exe" (
+    set "PY_EXE=D:\plant-veg-health\venv\Scripts\python.exe"
 ) else (
     set "PY_EXE=python"
 )
