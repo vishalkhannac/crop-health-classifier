@@ -1,69 +1,56 @@
-# How to Run — Plant & Vegetable Health Detection
+# How to Run — Plant & Vegetable Health Detection (Final Presentation Guide)
 
-Upload a photo of a plant leaf or vegetable. The app reports the **status / class**, a **confidence %**, the **disease** (if any), and whether it is **safe to consume** — in plain words.
+Upload one or more photos, take a live camera snapshot, or select a built-in demo specimen. The application reports:
+- **Identified Specimen & Status** (across 70+ plant leaf disease and fresh/rotten produce classes)
+- **Calibrated Confidence Meter (%)** + Top-3 breakdown
+- **Multi-Object Bounding Box Localization & Batch Verdict**
+- **Grad-CAM AI Attention Heatmap** showing where disease or rot is detected
+- **Disease Diagnosis + Actionable Treatment, Prevention & Storage Advisory**
+- **Safe-to-Consume Verdict** + **1-Click Downloadable PDF Health Report**
 
-> `Safe to consume` is a **visual estimate from appearance only, not a real food-safety test.**
-
----
-
-## Project location
-All project files live in `D:\plant-veg-health\`.
-
-## Python environment
-This project uses the Python 3.8 embedded in Spyder (`C:\Users\kurtz\Downloads\python\Python\python.exe`).
-All project packages are installed in `D:\plant-veg-health\venv\Lib\site-packages`.
-
-**To run any script, use:**
-```
-C:\Users\kurtz\Downloads\python\Python\python.exe <script>
-```
+> `Safe to consume` is a **visual estimate from exterior appearance only — not a laboratory microbiological food-safety test.**
 
 ---
 
-## 1. Prerequisites
-- Python 3.8 (Spyder-bundled) with packages installed in `venv\Lib\site-packages`
-- If running fresh: see the install section below
+## 1. Fastest Way to Launch (100% Offline)
 
-## 2. Install packages (once — already done if venv/Lib/site-packages is populated)
-```powershell
-$py = "C:\Users\kurtz\Downloads\python\Python\python.exe"
-$env:PYTHONPATH = "D:\plant-veg-health\venv\Lib\site-packages"
-$env:TEMP = "D:\tmp"
-$env:TMP = "D:\tmp"
-$env:HF_HOME = "D:\hf_home"
-& $py -m pip install tensorflow==2.13.0 opencv-python-headless scikit-learn streamlit datasets huggingface_hub --target "D:\plant-veg-health\venv\Lib\site-packages" --cache-dir "D:\pip-cache"
-```
+### Option A: Double-Click `start.bat`
+Simply double-click **`start.bat`** inside `D:\plant-veg-health\` or `C:\Users\kurtz\Downloads\MLMProjectFeed\`.
 
-## 3. Get the data (only needed for retraining)
+### Option B: Run via PowerShell
 ```powershell
-$py = "C:\Users\kurtz\Downloads\python\Python\python.exe"
-# Downloads PlantVillage + Fresh/Rotten datasets from HuggingFace (no login needed)
-& $py D:\plant-veg-health\src\get_data.py
-```
-Result: `data/` has one subfolder per class (102 classes across 38 plant leaf diseases and 64 fresh/rotten vegetable & fruit produce classes).
-
-## 4. Run the pipeline (in this order)
-```powershell
-$py = "C:\Users\kurtz\Downloads\python\Python\python.exe"
-& $py D:\plant-veg-health\src\preprocess.py   # builds train/val/test splits, saves model/labels.txt
-& $py D:\plant-veg-health\src\train.py         # trains, saves model/model.keras + curves
-& $py D:\plant-veg-health\src\evaluate.py      # test accuracy + confusion matrix
-```
-
-## 5. Run the app ← the main thing
-```powershell
-# In PowerShell:
 & "C:\Users\kurtz\Downloads\python\Python\python.exe" "D:\plant-veg-health\run_app.py"
 ```
-Open **http://localhost:8501**, upload a photo, and read the result. Stop with **Ctrl+C**.
+Then open [**http://localhost:8501**](http://localhost:8501) in your browser.
 
 ---
 
-## Troubleshooting
-- **ModuleNotFoundError** → make sure `sys.path` includes `venv\Lib\site-packages`; each script adds it automatically.
-- **App can't find model or labels** → run `preprocess.py` then `train.py` first.
-- **Training is slow** → normal without GPU; fine-tuning on CPU takes ~1–2 hours depending on dataset size.
-- **Disk space** → all data, cache, and model files are on D: (which has ~150 GB free).
+## 2. Presentation Demo Walkthrough (For Tomorrow's Review)
 
-## Current status
-**Review 1 scope complete.** Phases 1–7 fully built, tested, and verified. 102 classes covering comprehensive plant leaf diseases and fresh/decayed vegetables/fruits. Polished Streamlit UI live at `http://localhost:8501`.
+Once the app is open at `http://localhost:8501`:
+1. **Tab 1 — `🔍 Live Diagnosis & Batch Inspector`**:
+   - Select **`🧪 Quick Demo Samples`** to immediately demonstrate:
+     - **Multi-Object Detection (`test_multi_apples.jpg`)**: Shows 3 apples localized with green/red bounding boxes, individual crop breakdowns, and a Mixed Batch warning.
+     - **Sliced Rotten Apple (`test_user_apple.jpg`)**: Shows `Rotten Apple` at **99.7% confidence** alongside the **Grad-CAM Heatmap** highlighting the internal brown decay.
+     - **Rotten Tomato / Fresh Carrot / Rotten Capsicum / Fresh Pear**: Instant 99%+ confidence diagnoses with custom storage & treatment advice.
+   - Click **`📥 Download Official PDF Diagnostic Report`** to showcase the automated PDF export.
+   - Switch to **`📤 Upload Photo(s)`** (supports selecting multiple images at once for a batch summary table) or **`📷 Live Camera Capture`**.
+2. **Tab 2 — `📊 Model Architecture & Evaluation Metrics`**:
+   - Displays the MobileNetV2 architecture summary, **89.51% validation accuracy**, **Training & Validation Curves**, **Confusion Matrix**, and the searchable directory of all supported classes.
+
+---
+
+## 3. Full Data & Training Pipeline Commands (Reference)
+
+```powershell
+$py = "C:\Users\kurtz\Downloads\python\Python\python.exe"
+
+# Step 1: Preprocess data & generate stratified 70/15/15 splits
+& $py D:\plant-veg-health\src\preprocess.py
+
+# Step 2: Train 2-stage MobileNetV2 transfer learning model
+& $py D:\plant-veg-health\src\train.py
+
+# Step 3: Evaluate on test split & generate confusion matrix
+& $py D:\plant-veg-health\src\evaluate.py
+```

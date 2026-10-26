@@ -68,7 +68,6 @@ def find_candidate_regions(pil_img, min_area_ratio=0.012, max_area_ratio=0.94):
 
     overlap_thresh = 0.35
     while len(idxs) > 0:
-        last = len(idxs) - 1
         i = idxs[0]
         pick.append(i)
 
@@ -168,7 +167,10 @@ def analyze_image_multiobject(pil_img, model, labels, get_verdict_func, img_size
         top_idx = int(np.argmax(preds))
         conf = float(preds[top_idx]) * 100.0
         cls_name = labels[top_idx]
-        v_info = get_verdict_func(cls_name)
+        try:
+            v_info = get_verdict_func(cls_name, confidence=conf, preds=preds)
+        except TypeError:
+            v_info = get_verdict_func(cls_name)
         
         top3_indices = np.argsort(preds)[::-1][:3]
         top3 = [
@@ -183,7 +185,8 @@ def analyze_image_multiobject(pil_img, model, labels, get_verdict_func, img_size
             'class_name': cls_name,
             'confidence': conf,
             'verdict_info': v_info,
-            'top3': top3
+            'top3': top3,
+            'preds': preds,
         })
         
     annotated_img = draw_bounding_boxes(pil_img, item_results)
