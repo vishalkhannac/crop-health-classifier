@@ -178,12 +178,21 @@ with tab_diagnose:
         elif input_mode == "🧪 Quick Demo Samples":
             demo_options = {
                 "🍎 Multi-Object Batch: 3 Apples (2 Fresh, 1 Rotten)": "test_multi_apples.jpg",
-                "🍏 Sliced Rotten Apple (Internal Decay)": "test_user_apple.jpg",
-                "🍅 Rotten Tomato (Fungal Blight & Spoilage)": "test_user_tomato.jpg",
-                "🥕 Fresh Carrot (Healthy Root Produce)": "test_user_carrot.jpg",
-                "🫑 Rotten Capsicum (Bacterial Soft Rot)": "test_user_capsicum.jpg",
-                "🍃 Diseased Leaf: Tomato Late Blight": "test_diseased_leaf.jpg",
-                "🌿 Healthy Leaf: Apple Foliage": "test_healthy_leaf.jpg",
+                "🍅 Multi-Object Batch: 3 Tomatoes (2 Fresh, 1 Rotten)": "test_multi_tomatoes.jpg",
+                "🍌 Multi-Object Batch: 3 Bananas (2 Fresh, 1 Rotten)": "test_multi_bananas.jpg",
+                "🍊 Multi-Object Batch: 3 Oranges (2 Fresh, 1 Rotten)": "test_multi_oranges.jpg",
+                "🍓 Multi-Object Batch: 3 Strawberries (2 Fresh, 1 Rotten)": "test_multi_strawberries.jpg",
+                "🥕 Multi-Object Batch: 3 Carrots (2 Fresh, 1 Rotten)": "test_multi_carrots.jpg",
+                "🫑 Multi-Object Batch: 3 Capsicums (2 Fresh, 1 Rotten)": "test_multi_capsicums.jpg",
+                "🥔 Multi-Object Batch: 3 Potatoes (2 Fresh, 1 Rotten)": "test_multi_potatoes.jpg",
+                "🥒 Multi-Object Batch: 3 Cucumbers (2 Fresh, 1 Rotten)": "test_multi_cucumbers.jpg",
+                "🧺 Multi-Object Mixed Basket: 4 Items (Carrot, Tomato, Capsicum, Apple)": "test_multi_mixed_produce.jpg",
+                "🍏 Single: Sliced Rotten Apple (Internal Decay)": "test_user_apple.jpg",
+                "🍅 Single: Rotten Tomato (Fungal Blight & Spoilage)": "test_user_tomato.jpg",
+                "🥕 Single: Fresh Carrot (Healthy Root Produce)": "test_user_carrot.jpg",
+                "🫑 Single: Rotten Capsicum (Bacterial Soft Rot)": "test_user_capsicum.jpg",
+                "🍃 Single Leaf: Tomato Late Blight": "test_diseased_leaf.jpg",
+                "🌿 Single Leaf: Healthy Apple Foliage": "test_healthy_leaf.jpg",
             }
             selected_demo = st.selectbox("Choose a pre-loaded test specimen:", list(demo_options.keys()))
             sample_path = find_sample_file(demo_options[selected_demo])
